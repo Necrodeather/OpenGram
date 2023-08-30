@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "OpenGram"
+version = "0.1.0"
+description = "Web-based Social network for communicating photos with open source"
+authors = ["necrodeather <Morbid6dead@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Necrodeather/OpenGram"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.4"
+psycopg-binary = "^3.1.10"
+python-dotenv = "^1.0.0"
+gunicorn = "^21.2.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.286"
+black = "^23.7.0"
+mypy = "^1.5.1"
+django-stubs = "^4.2.3"
+pre-commit = "^3.3.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+multi_line_output = 6
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 80
+target-version = ['py311']
+include = '\.pyi?$'
+
+
+[tool.ruff]
+select = ["COM", "T100", "E", "F", "W", "ERA", "N"]
+ignore = ["F821"]
+fixable = ["ALL"]
+force-exclude = true
+line-length = 80
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+target-version = "py311"
+
+[tool.ruff.extend-per-file-ignores]
+"settings.py" = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "src.core.settings"

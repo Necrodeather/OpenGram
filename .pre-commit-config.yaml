@@ -1,0 +1,21 @@
+repos:
+  - repo: local
+    hooks:
+      - id: black
+        name: black
+        entry: black .
+        args: [--check, --config, pyproject.toml]
+        language: python
+        types: [python]
+      - id: ruff
+        name: ruff
+        entry: ruff .
+        args: [--config, pyproject.toml]
+        language: python
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: mypy
+        args: [--config-file, pyproject.toml, --explicit-package-bases]
+        language: python
+        types: [python]
