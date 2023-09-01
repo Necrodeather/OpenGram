@@ -13,9 +13,3 @@ repos:
         args: [--config, pyproject.toml]
         language: python
         types: [python]
-      - id: mypy
-        name: mypy
-        entry: mypy
-        args: [--config-file, pyproject.toml, --explicit-package-bases]
-        language: python
-        types: [python]

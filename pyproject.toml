@@ -11,15 +11,17 @@ repository = "https://github.com/Necrodeather/OpenGram"
 python = "^3.11"
 django = "^4.2.4"
 psycopg-binary = "^3.1.10"
-python-dotenv = "^1.0.0"
 gunicorn = "^21.2.0"
+django-environ = "^0.11.1"
+djangorestframework = "^3.14.0"
+django-phonenumber-field = {extras = ["phonenumbers"], version = "^7.1.0"}
+psycopg2 = "^2.9.7"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.286"
 black = "^23.7.0"
-mypy = "^1.5.1"
-django-stubs = "^4.2.3"
 pre-commit = "^3.3.3"
+isort = "^5.12.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -35,6 +37,15 @@ line_length = 80
 target-version = ['py311']
 include = '\.pyi?$'
 
+[tool.isort]
+profile = "black"
+skip_glob = ["venv"]
+skip = ["venv"]
+known_fastapi = "fastapi"
+default_section = "THIRDPARTY"
+sections = ["FUTURE", "FASTAPI", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+multi_line_output = 6
+
 
 [tool.ruff]
 select = ["COM", "T100", "E", "F", "W", "ERA", "N"]
@@ -47,10 +58,3 @@ target-version = "py311"
 
 [tool.ruff.extend-per-file-ignores]
 "settings.py" = ["E501"]
-
-[tool.mypy]
-python_version = "3.11"
-plugins = ["mypy_django_plugin.main"]
-
-[tool.django-stubs]
-django_settings_module = "src.core.settings"
