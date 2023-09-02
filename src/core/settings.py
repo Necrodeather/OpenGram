@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -16,9 +17,14 @@ DEBUG = env.bool("DEBUG")
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 
 CUSTOM_APPS = [
-    "rest_framework",
     "user",
     "post",
+]
+
+REST_API_APPS = [
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "drf_yasg",
 ]
 
 DEFAULT_APPS = [
@@ -30,7 +36,7 @@ DEFAULT_APPS = [
     "django.contrib.staticfiles",
 ]
 
-INSTALLED_APPS = [*CUSTOM_APPS, *DEFAULT_APPS]
+INSTALLED_APPS = [*CUSTOM_APPS, *DEFAULT_APPS, *REST_API_APPS]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -101,3 +107,16 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "user.CustomUser"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10800),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
+    "UPDATE_LAST_LOGIN": True,
+}
