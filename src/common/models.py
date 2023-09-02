@@ -1,8 +1,10 @@
+import uuid
+
 from django.db import models
 
 
 class CreatedAtMixin(models.Model):
-    created_at = models.DateTimeField(auto_created=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         abstract = True
@@ -16,7 +18,7 @@ class UpdatedAtMixin(models.Model):
 
 
 class BaseModel(CreatedAtMixin, UpdatedAtMixin):
-    id = models.UUIDField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
 
     class Meta:
         abstract = True

@@ -38,9 +38,13 @@ class CustomUser(AbstractBaseUser, BaseModel, PermissionsMixin):
         null=True,
         blank=True,
     )
-    about_me = models.TextField(verbose_name=_("About me"), default="")
+    about_me = models.TextField(
+        verbose_name=_("About me"),
+        default="",
+        blank=True,
+    )
     city = models.CharField(
-        verbose_name=_("Phone"),
+        verbose_name=_("City"),
         max_length=36,
         null=True,
         blank=True,
@@ -60,7 +64,9 @@ class CustomUser(AbstractBaseUser, BaseModel, PermissionsMixin):
 
     objects = UserManager()
 
+    def __str__(self):
+        return self.username
+
     class Meta:
-        db_table = "users"
-        verbose_name = _("User")
-        verbose_name_plural = _("Users")
+        verbose_name = _("user")
+        verbose_name_plural = _("users")

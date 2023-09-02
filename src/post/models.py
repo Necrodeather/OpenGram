@@ -29,31 +29,57 @@ class Post(BaseModel):
         related_name="posts",
     )
 
+    def __str__(self):
+        return str(self.id)
+
     class Meta:
-        verbose_name = _("Photo")
-        verbose_name_plural = _("Photos")
+        verbose_name = _("Post")
+        verbose_name_plural = _("Posts")
 
 
-class Like(BaseModel):
+class PostLike(BaseModel):
     post = models.ForeignKey(
         "Post",
         on_delete=models.CASCADE,
-        related_name="likes",
+        related_name="post_likes",
     )
     user = models.ForeignKey(
         "user.CustomUser",
         on_delete=models.CASCADE,
-        related_name="likes",
+        related_name="post_likes",
     )
 
+    def __str__(self):
+        return str(self.id)
+
     class Meta:
-        verbose_name = _("Like")
-        verbose_name_plural = _("Likes")
+        verbose_name = _("Post Like")
+        verbose_name_plural = _("Post Likes")
+
+
+class CommentLike(BaseModel):
+    comment = models.ForeignKey(
+        "Comment",
+        on_delete=models.CASCADE,
+        related_name="comment_likes",
+    )
+    user = models.ForeignKey(
+        "user.CustomUser",
+        on_delete=models.CASCADE,
+        related_name="comment_likes",
+    )
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = _("Comment Like")
+        verbose_name_plural = _("Comment Likes")
 
 
 class Comment(BaseModel):
     text = models.TextField()
-    like = models.IntegerField()
+    like = models.IntegerField(default=0)
     post = models.ForeignKey(
         "Post",
         on_delete=models.CASCADE,
@@ -68,7 +94,12 @@ class Comment(BaseModel):
         "Comment",
         on_delete=models.CASCADE,
         related_name="comments",
+        null=True,
+        blank=True,
     )
+
+    def __str__(self):
+        return str(self.id)
 
     class Meta:
         verbose_name = _("Comment")
