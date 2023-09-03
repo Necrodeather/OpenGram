@@ -43,9 +43,9 @@ include = '\.pyi?$'
 profile = "black"
 skip_glob = ["venv"]
 skip = ["venv"]
-known_fastapi = "fastapi"
+known_django = "django"
 default_section = "THIRDPARTY"
-sections = ["FUTURE", "FASTAPI", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+sections = ["FUTURE", "DJANGO", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 multi_line_output = 6
 
 

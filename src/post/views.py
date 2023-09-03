@@ -1,4 +1,4 @@
-from rest_framework import permissions, generics, viewsets, status
+from rest_framework import generics, permissions, status, viewsets
 
 from post.models import Post
 from post.serializer import CreatePostSerializer, PostSerializer

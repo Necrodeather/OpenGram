@@ -2,8 +2,10 @@
 
 import django.contrib.auth.models
 from django.db import migrations, models
-import phonenumber_field.modelfields
+
 import uuid
+
+import phonenumber_field.modelfields
 
 
 class Migration(migrations.Migration):
