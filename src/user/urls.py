@@ -1,13 +1,6 @@
-from django.urls import path
-
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
+from django.urls import include, path
 
 urlpatterns = [
-    path("sigh-in", TokenObtainPairView.as_view()),
-    path("token/refresh/", TokenRefreshView.as_view()),
-    path("token/verify/", TokenVerifyView.as_view()),
+    path("auth/", include("user.auth.urls")),
+    path("profile/", include("user.profile.urls")),
 ]
