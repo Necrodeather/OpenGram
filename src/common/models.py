@@ -1,24 +1,16 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 import uuid
 
 
-class CreatedAtMixin(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        abstract = True
-
-
-class UpdatedAtMixin(models.Model):
-    Updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-
-class BaseModel(CreatedAtMixin, UpdatedAtMixin):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
+class BaseModel(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        db_index=True,
+        verbose_name=_("identifier"),
+    )
 
     class Meta:
         abstract = True
