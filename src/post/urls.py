@@ -9,5 +9,5 @@ router.register(r"post", PostView, basename="post")
 
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("", include(router.urls), name="post"),
 ]

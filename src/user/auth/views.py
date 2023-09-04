@@ -2,10 +2,10 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework import generics
 
-from user.auth.serializer import CreateUserSerializer
+from user.auth.serializers import CreateUserSerializer
 
 
-class AuthUserView(generics.CreateAPIView):
+class CreateUserView(generics.CreateAPIView):
     serializer_class = CreateUserSerializer
 
     def perform_create(self, serializer):

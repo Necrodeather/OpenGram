@@ -2,7 +2,7 @@ from rest_framework import generics, permissions, viewsets
 
 from post.models import Post
 from post.permission import DeletePostPermission
-from post.serializer import CreatePostSerializer, PostSerializer
+from post.serializers import CreatePostSerializer, PostSerializer
 
 
 class PostView(

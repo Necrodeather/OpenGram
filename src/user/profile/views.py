@@ -1,11 +1,23 @@
-from rest_framework import generics, permissions, viewsets
+from rest_framework import generics, permissions
+from rest_framework.response import Response
 
-from user.profile.serializer import UserSerializer
+from user.models import CustomUser
+from user.profile.serializers import UserSerializer
 
 
-class UserView(
-    generics.RetrieveUpdateAPIView,
-    viewsets.ViewSet,
-):
+class ProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return CustomUser.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.request.user)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.request.user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
