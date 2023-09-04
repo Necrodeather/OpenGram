@@ -5,7 +5,7 @@ from post.permission import DeletePostPermission
 from post.serializers import CreatePostSerializer, PostSerializer
 
 
-class PostView(
+class UserPostView(
     generics.ListCreateAPIView,
     generics.RetrieveUpdateDestroyAPIView,
     viewsets.ViewSet,
@@ -21,4 +21,18 @@ class PostView(
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return Post.objects.all()
+        return Post.objects.filter(user=self.request.user).order_by(
+            "-created_at",
+        )
+
+
+class MainPostView(
+    generics.ListAPIView,
+    generics.RetrieveAPIView,
+    viewsets.ViewSet,
+):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Post.objects.all().order_by("-created_at")
