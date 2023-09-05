@@ -1,4 +1,3 @@
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -7,16 +6,6 @@ from common.models import BaseModel
 
 
 class Post(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
-    class PostTypeChoices(models.TextChoices):
-        PHOTO = "Photo", _("photo")
-        VIDEO = "Video", _("video")
-
-    type = models.CharField(
-        max_length=max([len(post_type) for post_type in PostTypeChoices]),
-        choices=PostTypeChoices.choices,
-        verbose_name=_("type"),
-    )
-    media = ArrayField(models.URLField(), verbose_name=_("media"))
     description = models.TextField(
         verbose_name=_("description"),
         default="",
@@ -37,6 +26,19 @@ class Post(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
     class Meta:
         verbose_name = _("post")
         verbose_name_plural = _("posts")
+
+
+class Image(BaseModel, CreatedAtModelMixin):
+    image = models.ImageField(upload_to="static/post", verbose_name=_("image"))
+    post = models.ForeignKey(
+        "Post",
+        on_delete=models.CASCADE,
+        related_name="images",
+    )
+
+    class Meta:
+        verbose_name = _("image")
+        verbose_name_plural = _("images")
 
 
 class PostLike(BaseModel, CreatedAtModelMixin):

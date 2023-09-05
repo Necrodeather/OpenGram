@@ -19,3 +19,9 @@ class UserSerializer(serializers.ModelSerializer):
             "id": {"read_only": True},
             "date_joined": {"read_only": True},
         }
+
+
+class UserAvatarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["avatar"]

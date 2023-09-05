@@ -21,10 +21,11 @@ CUSTOM_APPS = [
     "post",
 ]
 
-REST_API_APPS = [
+THIRD_PARTY_DJANGO_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_yasg",
+    "storages",
 ]
 
 DEFAULT_APPS = [
@@ -36,7 +37,7 @@ DEFAULT_APPS = [
     "django.contrib.staticfiles",
 ]
 
-INSTALLED_APPS = [*CUSTOM_APPS, *DEFAULT_APPS, *REST_API_APPS]
+INSTALLED_APPS = [*CUSTOM_APPS, *DEFAULT_APPS, *THIRD_PARTY_DJANGO_APPS]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -124,3 +125,10 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=env.int("REFRESH_TOKEN_LIFETIME")),
     "UPDATE_LAST_LOGIN": True,
 }
+
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+AWS_STORAGE_BUCKET_NAME = env.str("MINIO_BUCKET_NAME")
+AWS_ACCESS_KEY_ID = env.str("MINIO_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = env.str("MINIO_SECRET_KEY")
+AWS_S3_ENDPOINT_URL = env.str("MINIO_URL")

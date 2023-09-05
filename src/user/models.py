@@ -8,6 +8,12 @@ from common.models import BaseModel
 
 
 class CustomUser(AbstractUser, BaseModel):
+    avatar = models.ImageField(
+        upload_to="static/avatars",
+        verbose_name=_("avatar"),
+        blank=True,
+        null=True,
+    )
     middle_name = models.CharField(
         max_length=150,
         verbose_name=_("middle Name"),
@@ -36,6 +42,11 @@ class CustomUser(AbstractUser, BaseModel):
         verbose_name=_("birthday"),
         null=True,
         blank=True,
+    )
+
+    is_active = models.BooleanField(
+        _("active"),
+        default=False,
     )
 
     def __str__(self):

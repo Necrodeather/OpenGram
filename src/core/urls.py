@@ -1,5 +1,7 @@
 from django.contrib import admin
-from django.urls import include, path
+from django.contrib.staticfiles import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import include, path, re_path
 
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
@@ -30,4 +32,6 @@ urlpatterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="swagger",
     ),
+    re_path(r"^static/(?P<path>.*)$", views.serve),
 ]
+urlpatterns += staticfiles_urlpatterns()
