@@ -1,15 +1,11 @@
-from rest_framework import generics, permissions, viewsets
+from rest_framework import permissions, viewsets
 
 from post.models import Post
 from post.permission import DeletePostPermission
 from post.serializers import CreatePostSerializer, PostSerializer
 
 
-class UserPostView(
-    generics.ListCreateAPIView,
-    generics.RetrieveUpdateDestroyAPIView,
-    viewsets.ViewSet,
-):
+class UserPostView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, DeletePostPermission]
 
     def get_serializer_class(self):
@@ -21,18 +17,18 @@ class UserPostView(
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user).order_by(
-            "-created_at",
+        return (
+            Post.objects.select_related("user")
+            .filter(user=self.request.user)
+            .order_by(
+                "-created_at",
+            )
         )
 
 
-class MainPostView(
-    generics.ListAPIView,
-    generics.RetrieveAPIView,
-    viewsets.ViewSet,
-):
+class MainPostView(viewsets.ReadOnlyModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Post.objects.all().order_by("-created_at")
+        return Post.objects.select_related("user").all().order_by("-created_at")
