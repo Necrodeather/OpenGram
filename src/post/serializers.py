@@ -13,8 +13,13 @@ class ImagePostSerializer(serializers.ModelSerializer):
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
-    images = serializers.ListField(
+    upload_images = serializers.ListField(
         child=serializers.ImageField(),
+        write_only=True,
+    )
+    images = serializers.ListSerializer(
+        child=ImagePostSerializer(),
+        read_only=True,
     )
 
     def create(self, validated_data):
@@ -23,16 +28,15 @@ class CreatePostSerializer(serializers.ModelSerializer):
             user=validated_data["user"],
         )
         images = []
-        for image in validated_data["images"]:
+        for image in validated_data["upload_images"]:
             image.name = str(uuid4())
             images.append(Image(post=post, image=image))
-        Image.objects.bulk_create(images, batch_size=10)
-        post.images = images
+        post.images.bulk_create(images, batch_size=10)
         return post
 
     class Meta:
         model = Post
-        fields = ["images", "description"]
+        fields = ["id", "upload_images", "description", "images"]
 
 
 class UserPostSerializer(serializers.ModelSerializer):
