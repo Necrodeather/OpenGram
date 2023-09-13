@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from rest_framework import serializers
 
-from post.models import Image, Post
+from post.models import Comment, Image, Post
 from user.models import CustomUser
 
 
@@ -12,10 +12,21 @@ class ImagePostSerializer(serializers.ModelSerializer):
         fields = ["id", "image"]
 
 
-class CreatePostSerializer(serializers.ModelSerializer):
+class UpdateSelfPostSerializer(serializers.ModelSerializer):
+    images = serializers.ListSerializer(
+        child=ImagePostSerializer(),
+        read_only=True,
+    )
+
+    class Meta:
+        model = Post
+        fields = ["id", "description", "images"]
+        extra_kwargs = {"id": {"read_only": True}}
+
+
+class CreateSelfPostSerializer(serializers.ModelSerializer):
     upload_images = serializers.ListField(
         child=serializers.ImageField(),
-        write_only=True,
     )
     images = serializers.ListSerializer(
         child=ImagePostSerializer(),
@@ -37,6 +48,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ["id", "upload_images", "description", "images"]
+        extra_kwargs = {"id": {"read_only": True}}
 
 
 class UserPostSerializer(serializers.ModelSerializer):
@@ -62,3 +74,16 @@ class PostSerializer(serializers.ModelSerializer):
             "comment",
             "created_at",
         ]
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    parent_id = serializers.UUIDField(allow_null=True)
+
+    class Meta:
+        model = Comment
+        fields = ["id", "like", "user", "parent_id", "text"]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "like": {"read_only": True},
+            "user": {"read_only": True},
+        }

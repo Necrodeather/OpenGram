@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 
@@ -5,7 +6,8 @@ from user.models import CustomUser
 from user.profile.serializers import UserAvatarSerializer, UserSerializer
 
 
-class ProfileView(generics.RetrieveUpdateAPIView):
+@extend_schema(tags=["profile"])
+class SelfProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer
 
@@ -23,7 +25,8 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         return Response(serializer.data)
 
 
-class ProfileAvatarView(generics.UpdateAPIView):
+@extend_schema(tags=["profile"])
+class SelfProfileAvatarView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserAvatarSerializer
 
@@ -32,3 +35,9 @@ class ProfileAvatarView(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
+
+@extend_schema(tags=["profile"])
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer

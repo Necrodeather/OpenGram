@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from common.mixins import CreatedAtModelMixin
 from common.models import BaseModel
 
 
@@ -55,3 +56,12 @@ class CustomUser(AbstractUser, BaseModel):
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
+
+
+class Subscribers(BaseModel, CreatedAtModelMixin):
+    user = models.OneToOneField("CustomUser", on_delete=models.CASCADE)
+    followers = models.ManyToManyField(
+        "self",
+        symmetrical=False,
+        related_name="following",
+    )

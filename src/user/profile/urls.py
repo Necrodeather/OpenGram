@@ -1,8 +1,13 @@
 from django.urls import path
 
-from user.profile.views import ProfileAvatarView, ProfileView
+from user.profile.views import (
+    SelfProfileAvatarView,
+    SelfProfileView,
+    UserProfileView,
+)
 
 urlpatterns = [
-    path("", ProfileView.as_view(), name="profile"),
-    path("avatar/", ProfileAvatarView.as_view(), name="avatar"),
+    path("self/", SelfProfileView.as_view(), name="user-profile"),
+    path("avatar/", SelfProfileAvatarView.as_view(), name="user-avatar"),
+    path("<uuid:id>", UserProfileView.as_view(), name="user-profile"),
 ]

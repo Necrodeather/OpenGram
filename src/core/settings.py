@@ -24,7 +24,7 @@ CUSTOM_APPS = [
 THIRD_PARTY_DJANGO_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
-    "drf_yasg",
+    "drf_spectacular",
     "storages",
 ]
 
@@ -113,11 +113,30 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
 }
 
-SWAGGER_SETTINGS = {"USE_SESSION_AUTH": None}
+SPECTACULAR_SETTINGS = {
+    "TITLE": "OpenGram API",
+    "DESCRIPTION": "Web-based Social network for communicating photos with open source",
+    "VERSION": "0.1.0",
+    "CONTACT": {"email": "Morbid6dead@gmail.com"},
+    "LICENSE": {"name": "MIT"},
+    "SERVE_INCLUDE_SCHEMA": True,
+    "SWAGGER_UI_DIST": "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest",
+    "SWAGGER_UI_FAVICON_HREF": "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/favicon-32x32.png",
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
+    "OAUTH2_AUTHORIZATION_URL": "api/user/auth/sigh-in/",
+    "OAUTH2_TOKEN_URL": "api/user/auth/sigh-in/",
+    "OAUTH2_REFRESH_URL": "api/user/auth/token/refresh/",
+    "SCHEMA_PATH_PREFIX": "/api/",
+}
 
 
 SIMPLE_JWT = {
