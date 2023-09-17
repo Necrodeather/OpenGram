@@ -62,8 +62,11 @@ class CommentPostView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        post = get_object_or_404(Post, pk=self.kwargs.get("post_id"))
-        return post.comments.all().order_by("-created_at")
+        return (
+            Comment.objects.select_related("post")
+            .filter(post_id=self.kwargs.get("post_id"))
+            .order_by("-created_at")
+        )
 
     def perform_create(self, serializer):
         post = get_object_or_404(Post, pk=self.kwargs.get("post_id"))
@@ -72,10 +75,9 @@ class CommentPostView(viewsets.ModelViewSet):
         post.save()
 
     def perform_destroy(self, instance):
-        post = get_object_or_404(Post, pk=self.kwargs.get("post_id"))
+        instance.post.comment = instance.post.comment - 1
+        instance.post.save()
         instance.delete()
-        post.comment = post.comment - 1 if post.comment < 0 else 0
-        post.save()
 
 
 @extend_schema(tags=["comment"])
@@ -85,39 +87,27 @@ class CommentLikesView(generics.ListCreateAPIView, generics.DestroyAPIView):
     lookup_field = "comment_id"
 
     def get_queryset(self):
-        comment = get_object_or_404(
-            Comment,
-            pk=self.kwargs.get(self.lookup_field),
-            post_id=self.kwargs.get("post_id"),
+        return (
+            CommentLike.objects.select_related("comment")
+            .filter(comment_id=self.kwargs.get(self.lookup_field))
+            .order_by("-created_at")
         )
-        return comment.comment_likes.all().order_by("-created_at")
 
-    def perform_create(self, serializer):
-        comment = get_object_or_404(
-            Comment,
-            pk=self.kwargs.get("id"),
-            post_id=self.kwargs.get("post_id"),
-        )
+    def create(self, request, *args, **kwargs):
         obj, created = CommentLike.objects.get_or_create(
-            comment=comment,
-            user=self.request.user,
+            comment_id=kwargs.get(self.lookup_field),
+            user=request.user,
         )
         if not created:
-            return
-        comment.like = comment.like + 1
-        comment.save()
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        obj.comment.like = obj.comment.like + 1
+        obj.comment.save()
+        return Response(status=status.HTTP_201_CREATED)
 
     def perform_destroy(self, instance):
-        comment = get_object_or_404(
-            Comment,
-            pk=self.kwargs.get(self.lookup_field),
-            post_id=self.kwargs.get("post_id"),
-        )
-        if comment.like == 0:
-            return
+        instance.comment.like = instance.comment.like - 1
+        instance.comment.save()
         instance.delete()
-        comment.like = comment.like - 1
-        comment.save()
 
 
 @extend_schema(tags=["post"])
@@ -127,37 +117,24 @@ class PostLikesView(generics.ListCreateAPIView, generics.DestroyAPIView):
     lookup_field = "id"
 
     def get_queryset(self):
-        post = get_object_or_404(
-            Post,
-            pk=self.kwargs.get(self.lookup_field),
+        return (
+            PostLike.objects.select_related("post")
+            .filter(post_id=self.kwargs.get(self.lookup_field))
+            .order_by("-created_at")
         )
-        return post.post_likes.all().order_by("-created_at")
 
-    def perform_create(self, serializer):
-        post = get_object_or_404(
-            Post,
-            id=self.kwargs.get(self.lookup_field),
-        )
+    def create(self, request, *args, **kwargs):
         obj, created = PostLike.objects.get_or_create(
-            post=post,
-            user=self.request.user,
+            post_id=kwargs.get(self.lookup_field),
+            user=request.user,
         )
         if not created:
-            return
-        post.like = post.like + 1
-        post.save()
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        obj.post.like = obj.post.like + 1
+        obj.post.save()
+        return Response(status=status.HTTP_201_CREATED)
 
-    def destroy(self, request, *args, **kwargs):
-        post = get_object_or_404(
-            Post,
-            id=self.kwargs.get(self.lookup_field),
-        )
-        post_like = get_object_or_404(
-            PostLike,
-            post=post,
-            user=self.request.user,
-        )
-        post_like.delete()
-        post.like = post.like - 1
-        post.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def perform_destroy(self, instance):
+        instance.post.like = instance.post.like - 1
+        instance.post.save()
+        instance.delete()

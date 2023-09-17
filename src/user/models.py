@@ -59,9 +59,16 @@ class CustomUser(AbstractUser, BaseModel):
 
 
 class Subscribers(BaseModel, CreatedAtModelMixin):
-    user = models.OneToOneField("CustomUser", on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        "CustomUser",
+        on_delete=models.CASCADE,
+        related_name="subscribers",
+    )
     followers = models.ManyToManyField(
         "self",
         symmetrical=False,
         related_name="following",
     )
+
+    def __str__(self):
+        return self.user.username
