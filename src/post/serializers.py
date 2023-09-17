@@ -77,7 +77,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    parent_id = serializers.UUIDField(allow_null=True)
+    user = UserPostSerializer(read_only=True)
 
     class Meta:
         model = Comment
@@ -86,4 +86,9 @@ class CommentSerializer(serializers.ModelSerializer):
             "id": {"read_only": True},
             "like": {"read_only": True},
             "user": {"read_only": True},
+            "parent_id": {"allow_null": True},
         }
+
+
+class LikeSerializer(serializers.Serializer):
+    user = UserPostSerializer(read_only=True)
