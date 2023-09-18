@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from common.permission import UserPermission
 from user.models import CustomUser, Subscribers
 from user.profile.serializers import UserAvatarSerializer, UserSerializer
+from user.profile.utils import save_subs
 
 
 @extend_schema(tags=["self"])
@@ -51,7 +52,7 @@ class UserProfileView(generics.RetrieveAPIView):
         )
 
 
-@extend_schema(tags=["subscribers"])
+@extend_schema(tags=["subscribers"], request=None)
 class SubscribersView(generics.ListCreateAPIView, generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, UserPermission]
     serializer_class = UserSerializer
@@ -59,22 +60,24 @@ class SubscribersView(generics.ListCreateAPIView, generics.DestroyAPIView):
 
     def get_queryset(self):
         return CustomUser.objects.prefetch_related("subscribers").filter(
-            subscribers__followers__user__username=self.kwargs.get(
+            subscribers__following__user__username=self.kwargs.get(
                 self.lookup_field,
             ),
         )
 
     def create(self, request, *args, **kwargs):
-        profile = get_object_or_404(
-            CustomUser,
-            username=kwargs.get(self.lookup_field),
-        )
-        if profile.username == request.user.username:
+        if kwargs.get(self.lookup_field) == request.user.username:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        following = Subscribers.objects.create(user=profile)
-        follower = Subscribers.objects.create(user=request.user)
-        following.followers.add(follower)
-        return Response(status=status.HTTP_201_CREATED)
+        profile, _ = Subscribers.objects.get_or_create(
+            user__username=kwargs.get(self.lookup_field),
+        )
+        follower, _ = Subscribers.objects.get_or_create(user=request.user)
+        if follower in profile.followers.all():
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        profile.followers.add(follower)
+        save_subs(profile.user, follower.user)
+        serializer = self.serializer_class(follower.user)
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         profile = get_object_or_404(
@@ -86,4 +89,5 @@ class SubscribersView(generics.ListCreateAPIView, generics.DestroyAPIView):
             user=request.user,
         )
         profile.followers.remove(follower)
+        save_subs(profile.user, follower.user, added=False)
         return Response(status=status.HTTP_204_NO_CONTENT)

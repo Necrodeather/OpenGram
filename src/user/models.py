@@ -28,6 +28,14 @@ class CustomUser(AbstractUser, BaseModel):
         null=True,
         blank=True,
     )
+    following = models.IntegerField(
+        verbose_name=_("following"),
+        default=0,
+    )
+    followers = models.IntegerField(
+        verbose_name=_("followers"),
+        default=0,
+    )
     about_me = models.TextField(
         verbose_name=_("about me"),
         default="",
@@ -63,12 +71,18 @@ class Subscribers(BaseModel, CreatedAtModelMixin):
         "CustomUser",
         on_delete=models.CASCADE,
         related_name="subscribers",
+        verbose_name=_("user"),
     )
     followers = models.ManyToManyField(
         "self",
         symmetrical=False,
         related_name="following",
+        verbose_name=_("followers"),
     )
+
+    class Meta:
+        verbose_name = _("subscriber")
+        verbose_name_plural = _("subscribers")
 
     def __str__(self):
         return self.user.username
