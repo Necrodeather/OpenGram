@@ -4,6 +4,9 @@ from user.models import CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
+    followers = serializers.IntegerField(read_only=True)
+    following = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = CustomUser
         exclude = (

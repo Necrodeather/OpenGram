@@ -22,17 +22,17 @@ router.register(
 urlpatterns = [
     path("", include(router.urls), name="self-posts"),
     path(
-        "user-posts/<uuid:user_id>",
+        "user-posts/<str:username>",
         UserPostsView.as_view(),
         name="user-posts",
     ),
     path(
-        "comments/<uuid:post_id>/<uuid:comment_id>/likes",
+        "comments/<uuid:comment_id>/likes",
         CommentLikesView.as_view(),
         name="comment-likes",
     ),
     path(
-        "post-likes/<uuid:id>",
+        "post-likes/<uuid:post_id>",
         PostLikesView.as_view(),
         name="post-likes",
     ),

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from post.models import Comment, CommentLike, Image, Post, PostLike
+from post.models import Comment, Image, Like, Post
 
 
 @admin.register(Image)
@@ -15,10 +15,10 @@ class PostAdmin(admin.ModelAdmin):
     exclude = ["id"]
 
 
-@admin.register(PostLike)
-class PostLikeAdmin(admin.ModelAdmin):
-    search_fields = ["user__email", "user__username"]
-    list_display = ["post", "user", "created_at"]
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    search_fields = ["user", "post", "comment"]
+    list_display = ["post", "comment", "user", "created_at"]
     exclude = ["id"]
 
 
@@ -32,11 +32,4 @@ class CommentAdmin(admin.ModelAdmin):
         "id",
     ]
     list_display = ["user", "post", "created_at", "text", "id", "parent_id"]
-    exclude = ["id"]
-
-
-@admin.register(CommentLike)
-class CommentLikeAdmin(admin.ModelAdmin):
-    search_fields = ["user__email", "user__username"]
-    list_display = ["comment", "user", "created_at"]
     exclude = ["id"]

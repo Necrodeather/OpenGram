@@ -27,6 +27,7 @@ class UpdateSelfPostSerializer(serializers.ModelSerializer):
 class CreateSelfPostSerializer(serializers.ModelSerializer):
     upload_images = serializers.ListField(
         child=serializers.ImageField(),
+        write_only=True,
     )
     images = serializers.ListSerializer(
         child=ImagePostSerializer(),
@@ -62,6 +63,8 @@ class PostSerializer(serializers.ModelSerializer):
     images = serializers.ListSerializer(
         child=ImagePostSerializer(),
     )
+    comment = serializers.IntegerField(read_only=True)
+    like = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Post
@@ -70,21 +73,21 @@ class PostSerializer(serializers.ModelSerializer):
             "user",
             "images",
             "description",
-            "like",
-            "comment",
             "created_at",
+            "comment",
+            "like",
         ]
 
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserPostSerializer(read_only=True)
+    like = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Comment
-        fields = ["id", "like", "user", "parent_id", "text"]
+        fields = ["id", "user", "parent_id", "text", "like"]
         extra_kwargs = {
             "id": {"read_only": True},
-            "like": {"read_only": True},
             "user": {"read_only": True},
             "parent_id": {"allow_null": True},
         }

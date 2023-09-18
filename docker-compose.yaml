@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  database:
+    hostname: postgres
+    image: postgres:latest
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}
+    volumes:
+      - db:/var/lib/postgresql/data
+    restart: always
+
+  bucket:
+    image: minio/minio:latest
+    hostname: minio
+    volumes:
+      - bucket:/data
+    ports:
+      - ${MINIO_EXTERNAL_BOTO_PORT}:9000
+      - ${MINIO_EXTERNAL_HTTP_PORT}:9001
+    env_file:
+      - .env
+    command: server /data --console-address :9001
+
+  create-bucket:
+    image: minio/mc:latest
+    depends_on:
+      - bucket
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add --api s3v4 s3 ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
+      /usr/bin/mc mb s3/${MINIO_BUCKET_NAME}/;
+      /usr/bin/mc anonymous set download s3/${MINIO_BUCKET_NAME};
+      "
+
+volumes:
+  db:
+  bucket:

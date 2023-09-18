@@ -14,9 +14,6 @@ class SelfProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated, UserPermission]
     serializer_class = UserSerializer
 
-    def get_queryset(self):
-        return CustomUser.objects.all()
-
     def retrieve(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.request.user)
         return Response(serializer.data)
@@ -67,13 +64,13 @@ class SubscribersView(generics.ListCreateAPIView, generics.DestroyAPIView):
 
     def create(self, request, *args, **kwargs):
         if kwargs.get(self.lookup_field) == request.user.username:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         profile, _ = Subscribers.objects.get_or_create(
             user__username=kwargs.get(self.lookup_field),
         )
         follower, _ = Subscribers.objects.get_or_create(user=request.user)
         if follower in profile.followers.all():
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         profile.followers.add(follower)
         save_subs(profile.user, follower.user)
         serializer = self.serializer_class(follower.user)

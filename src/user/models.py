@@ -6,6 +6,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from common.mixins import CreatedAtModelMixin
 from common.models import BaseModel
+from user.managers import CustomUserManager
 
 
 class CustomUser(AbstractUser, BaseModel):
@@ -28,14 +29,6 @@ class CustomUser(AbstractUser, BaseModel):
         null=True,
         blank=True,
     )
-    following = models.IntegerField(
-        verbose_name=_("following"),
-        default=0,
-    )
-    followers = models.IntegerField(
-        verbose_name=_("followers"),
-        default=0,
-    )
     about_me = models.TextField(
         verbose_name=_("about me"),
         default="",
@@ -57,6 +50,8 @@ class CustomUser(AbstractUser, BaseModel):
         _("active"),
         default=False,
     )
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.username

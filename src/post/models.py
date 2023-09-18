@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from common.mixins import CreatedAtModelMixin, UpdatedAtModelMixin
 from common.models import BaseModel
+from post.managers import CustomCommentManager, CustomPostManager
 
 
 class Post(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
@@ -11,14 +12,14 @@ class Post(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
         default="",
         blank=True,
     )
-    like = models.IntegerField(verbose_name=_("like"), default=0)
-    comment = models.IntegerField(verbose_name=_("comment"), default=0)
     user = models.ForeignKey(
         "user.CustomUser",
         on_delete=models.CASCADE,
         related_name="posts",
         verbose_name=_("user"),
     )
+
+    objects = CustomPostManager()
 
     def __str__(self):
         return str(self.id)
@@ -29,7 +30,10 @@ class Post(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
 
 
 class Image(BaseModel, CreatedAtModelMixin):
-    image = models.ImageField(upload_to="static/post", verbose_name=_("image"))
+    image = models.ImageField(
+        upload_to="static/post",
+        verbose_name=_("image"),
+    )
     post = models.ForeignKey(
         "Post",
         on_delete=models.CASCADE,
@@ -41,34 +45,20 @@ class Image(BaseModel, CreatedAtModelMixin):
         verbose_name_plural = _("images")
 
 
-class PostLike(BaseModel, CreatedAtModelMixin):
-    post = models.ForeignKey(
-        "Post",
-        on_delete=models.CASCADE,
-        related_name="post_likes",
-        verbose_name=_("post"),
-    )
-    user = models.ForeignKey(
-        "user.CustomUser",
-        on_delete=models.CASCADE,
-        related_name="post_likes",
-        verbose_name=_("user"),
-    )
-
-    def __str__(self):
-        return str(self.id)
-
-    class Meta:
-        verbose_name = _("like in post")
-        verbose_name_plural = _("likes in posts")
-
-
-class CommentLike(BaseModel, CreatedAtModelMixin):
+class Like(BaseModel, CreatedAtModelMixin):
     comment = models.ForeignKey(
         "Comment",
         on_delete=models.CASCADE,
-        related_name="comment_likes",
+        related_name="likes",
         verbose_name=_("comment"),
+        null=True,
+    )
+    post = models.ForeignKey(
+        "Post",
+        on_delete=models.CASCADE,
+        related_name="likes",
+        verbose_name=_("post"),
+        null=True,
     )
     user = models.ForeignKey(
         "user.CustomUser",
@@ -81,13 +71,12 @@ class CommentLike(BaseModel, CreatedAtModelMixin):
         return str(self.id)
 
     class Meta:
-        verbose_name = _("like in comment")
-        verbose_name_plural = _("likes in comments")
+        verbose_name = _("like")
+        verbose_name_plural = _("likes")
 
 
 class Comment(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
     text = models.TextField(verbose_name=_("text"))
-    like = models.IntegerField(verbose_name=_("likes"), default=0)
     post = models.ForeignKey(
         "Post",
         on_delete=models.CASCADE,
@@ -108,6 +97,8 @@ class Comment(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
         blank=True,
         verbose_name=_("parent comment"),
     )
+
+    objects = CustomCommentManager()
 
     def __str__(self):
         return str(self.id)

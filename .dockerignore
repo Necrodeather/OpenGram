@@ -1,0 +1,5 @@
+LICENSE
+.gitignore
+.env.example
+.pre-commit-config.yaml
+README.md
