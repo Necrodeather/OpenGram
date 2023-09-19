@@ -1,6 +1,29 @@
 version: '3'
 
 services:
+  web:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    expose:
+      - 8000
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - database
+      - create-bucket
+
+  nginx:
+    image: nginx:1.25.2-bookworm
+    volumes:
+      - ./deploy/nginx:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
   database:
     hostname: postgres
     image: postgres:latest
