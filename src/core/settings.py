@@ -151,3 +151,13 @@ AWS_STORAGE_BUCKET_NAME = env.str("MINIO_BUCKET_NAME")
 AWS_ACCESS_KEY_ID = env.str("MINIO_ACCESS_KEY")
 AWS_SECRET_ACCESS_KEY = env.str("MINIO_SECRET_KEY")
 AWS_S3_ENDPOINT_URL = env.str("MINIO_URL")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env.str("REDIS_HOST"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+}

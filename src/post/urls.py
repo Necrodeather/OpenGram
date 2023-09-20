@@ -1,4 +1,5 @@
 from django.urls import include, path
+from django.views.decorators.cache import cache_page
 
 from rest_framework import routers
 
@@ -20,20 +21,20 @@ router.register(
 
 
 urlpatterns = [
-    path("", include(router.urls), name="self-posts"),
+    path("", cache_page(60 * 30)(include(router.urls)), name="self-posts"),
     path(
         "user-posts/<str:username>",
-        UserPostsView.as_view(),
+        cache_page(60 * 30)(UserPostsView.as_view()),
         name="user-posts",
     ),
     path(
         "comments/<uuid:comment_id>/likes",
-        CommentLikesView.as_view(),
+        cache_page(60 * 30)(CommentLikesView.as_view()),
         name="comment-likes",
     ),
     path(
         "post-likes/<uuid:post_id>",
-        PostLikesView.as_view(),
+        cache_page(60 * 30)(PostLikesView.as_view()),
         name="post-likes",
     ),
 ]

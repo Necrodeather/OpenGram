@@ -14,6 +14,7 @@ services:
     depends_on:
       - database
       - create-bucket
+      - cache
 
   nginx:
     image: nginx:1.25.2-bookworm
@@ -58,6 +59,13 @@ services:
       /usr/bin/mc anonymous set download s3/${MINIO_BUCKET_NAME};
       "
 
+  cache:
+    hostname: redis
+    image: redis:7.2.1-bookworm
+    volumes:
+      - cache:/var/lib/redis/data
+
 volumes:
   db:
   bucket:
+  cache:

@@ -35,6 +35,15 @@ services:
       /usr/bin/mc anonymous set download s3/${MINIO_BUCKET_NAME};
       "
 
+  cache:
+    hostname: redis
+    image: redis:7.2.1-bookworm
+    volumes:
+      - cache:/var/lib/redis/data
+    ports:
+      - "6379:6379"
+
 volumes:
   db:
   bucket:
+  cache:
