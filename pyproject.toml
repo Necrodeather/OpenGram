@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "OpenGram"
-version = "0.1.0"
+version = "0.1.2"
 description = "Web-based Social network for communicating photos with open source"
 authors = ["necrodeather <Morbid6dead@gmail.com>"]
 license = "MIT"
