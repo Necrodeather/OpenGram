@@ -17,8 +17,8 @@ DEBUG = env.bool("DEBUG")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 CUSTOM_APPS = [
-    "user",
-    "post",
+    "user.apps.UserConfig",
+    "post.apps.PostConfig",
 ]
 
 THIRD_PARTY_DJANGO_APPS = [
@@ -113,6 +113,14 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/minute",
+        "user": "500/minute",
+    },
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
@@ -121,7 +129,7 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "OpenGram API",
     "DESCRIPTION": "Web-based Social network for communicating photos with open source",
-    "VERSION": "0.1.0",
+    "VERSION": "0.1.2",
     "CONTACT": {"email": "Morbid6dead@gmail.com"},
     "LICENSE": {"name": "MIT"},
     "SERVE_INCLUDE_SCHEMA": True,
@@ -161,6 +169,10 @@ CACHES = {
         },
     },
 }
+
+CACHE_TTL = 60 * 30
+CACHE_ONE_DAY = 60 * 60 * 24
+
 
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BROKER_URL = env.str("REDIS_HOST")

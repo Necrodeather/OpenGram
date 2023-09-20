@@ -9,7 +9,7 @@ from common.models import BaseModel
 from user.managers import CustomUserManager
 
 
-class CustomUser(AbstractUser, BaseModel):
+class CustomUser(BaseModel, AbstractUser):
     avatar = models.ImageField(
         upload_to="static/avatars",
         verbose_name=_("avatar"),
@@ -53,15 +53,15 @@ class CustomUser(AbstractUser, BaseModel):
 
     objects = CustomUserManager()
 
-    def __str__(self):
-        return self.username
-
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
+    def __str__(self):
+        return self.username
 
-class Subscribers(BaseModel, CreatedAtModelMixin):
+
+class Subscribers(CreatedAtModelMixin, BaseModel):
     user = models.OneToOneField(
         "CustomUser",
         on_delete=models.CASCADE,

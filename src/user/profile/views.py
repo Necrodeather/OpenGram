@@ -4,6 +4,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from common.permission import UserPermission
+from common.views import ListCreateDestroyView
 from user.models import CustomUser, Subscribers
 from user.profile.serializers import UserAvatarSerializer, UserSerializer
 
@@ -49,8 +50,7 @@ class UserProfileView(generics.RetrieveAPIView):
 
 
 @extend_schema(tags=["subscribers"], request=None)
-class SubscribersView(generics.ListCreateAPIView, generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated, UserPermission]
+class SubscribersView(ListCreateDestroyView):
     serializer_class = UserSerializer
     lookup_field = "user_id"
 

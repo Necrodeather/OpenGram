@@ -5,7 +5,7 @@ import uuid
 from typing import Any
 
 from core import celery_app
-from core.settings import PROJECT_HTTP_ADDRESS
+from core.settings import CACHE_ONE_DAY, PROJECT_HTTP_ADDRESS
 
 
 @celery_app.task
@@ -17,4 +17,4 @@ def send_confirmation_email(user: dict[str, Any]) -> None:
         None,
         [user["email"]],
     )
-    cache.set(token, user, 86400)
+    cache.set(token, user, CACHE_ONE_DAY)

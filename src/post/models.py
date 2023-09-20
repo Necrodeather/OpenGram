@@ -6,7 +6,7 @@ from common.models import BaseModel
 from post.managers import CustomCommentManager, CustomPostManager
 
 
-class Post(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
+class Post(CreatedAtModelMixin, UpdatedAtModelMixin, BaseModel):
     description = models.TextField(
         verbose_name=_("description"),
         default="",
@@ -21,15 +21,16 @@ class Post(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
 
     objects = CustomPostManager()
 
-    def __str__(self):
-        return str(self.id)
-
     class Meta:
         verbose_name = _("post")
         verbose_name_plural = _("posts")
+        ordering = "-created_at"
+
+    def __str__(self):
+        return str(self.id)
 
 
-class Image(BaseModel, CreatedAtModelMixin):
+class Image(CreatedAtModelMixin, BaseModel):
     image = models.ImageField(
         upload_to="static/post",
         verbose_name=_("image"),
@@ -45,7 +46,7 @@ class Image(BaseModel, CreatedAtModelMixin):
         verbose_name_plural = _("images")
 
 
-class Like(BaseModel, CreatedAtModelMixin):
+class Like(CreatedAtModelMixin, BaseModel):
     comment = models.ForeignKey(
         "Comment",
         on_delete=models.CASCADE,
@@ -67,15 +68,16 @@ class Like(BaseModel, CreatedAtModelMixin):
         verbose_name=_("user"),
     )
 
-    def __str__(self):
-        return str(self.id)
-
     class Meta:
         verbose_name = _("like")
         verbose_name_plural = _("likes")
+        ordering = "-created_at"
+
+    def __str__(self):
+        return str(self.id)
 
 
-class Comment(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
+class Comment(CreatedAtModelMixin, UpdatedAtModelMixin, BaseModel):
     text = models.TextField(verbose_name=_("text"))
     post = models.ForeignKey(
         "Post",
@@ -100,9 +102,10 @@ class Comment(BaseModel, CreatedAtModelMixin, UpdatedAtModelMixin):
 
     objects = CustomCommentManager()
 
-    def __str__(self):
-        return str(self.id)
-
     class Meta:
         verbose_name = _("comment")
         verbose_name_plural = _("comments")
+        ordering = "-created_at"
+
+    def __str__(self):
+        return str(self.id)
