@@ -6,7 +6,12 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from user.auth.views import ConfirmRegistration, CreateUserView
+from user.auth.views import (
+    ConfirmRegistrationView,
+    CreateUserView,
+    ForgotPasswordView,
+    SetPasswordView,
+)
 
 urlpatterns = [
     path("sign-up/", CreateUserView.as_view(), name="register"),
@@ -15,7 +20,17 @@ urlpatterns = [
     path("token/verify/", TokenVerifyView.as_view(), name="verify"),
     path(
         "confirm-email/<uuid:token>",
-        ConfirmRegistration.as_view(),
+        ConfirmRegistrationView.as_view(),
         name="confirm-email",
+    ),
+    path(
+        "forgot-password",
+        ForgotPasswordView.as_view(),
+        name="forgot_password",
+    ),
+    path(
+        "reset-password/<uuid:token>",
+        SetPasswordView.as_view(),
+        name="forgot_password",
     ),
 ]

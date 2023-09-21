@@ -24,7 +24,7 @@ class Post(CreatedAtModelMixin, UpdatedAtModelMixin, BaseModel):
     class Meta:
         verbose_name = _("post")
         verbose_name_plural = _("posts")
-        ordering = "-created_at"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return str(self.id)
@@ -71,7 +71,7 @@ class Like(CreatedAtModelMixin, BaseModel):
     class Meta:
         verbose_name = _("like")
         verbose_name_plural = _("likes")
-        ordering = "-created_at"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return str(self.id)
@@ -105,7 +105,7 @@ class Comment(CreatedAtModelMixin, UpdatedAtModelMixin, BaseModel):
     class Meta:
         verbose_name = _("comment")
         verbose_name_plural = _("comments")
-        ordering = "-created_at"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return str(self.id)
