@@ -42,8 +42,9 @@ services:
     volumes:
       - bucket:/data
     ports:
-      - ${MINIO_EXTERNAL_BOTO_PORT}:9000
       - ${MINIO_EXTERNAL_HTTP_PORT}:9001
+    expose:
+      - 9000
     env_file:
       - .env
     command: server /data --console-address :9001
@@ -64,6 +65,20 @@ services:
     image: redis:7.2.1-bookworm
     volumes:
       - cache:/var/lib/redis/data
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    command: python -m celery -A core.celery worker -l INFO -P threads
+    volumes:
+      - .:/app
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - cache
 
 volumes:
   db:

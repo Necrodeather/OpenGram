@@ -23,7 +23,6 @@ pillow = "^10.0.0"
 drf-spectacular = {extras = ["sidecar"], version = "^0.26.4"}
 celery = "^5.3.4"
 redis = "^5.0.0"
-django-redis = "^5.3.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.286"

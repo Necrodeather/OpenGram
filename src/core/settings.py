@@ -153,19 +153,15 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
 }
 
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-AWS_STORAGE_BUCKET_NAME = env.str("MINIO_BUCKET_NAME")
-AWS_ACCESS_KEY_ID = env.str("MINIO_ACCESS_KEY")
-AWS_SECRET_ACCESS_KEY = env.str("MINIO_SECRET_KEY")
-AWS_S3_ENDPOINT_URL = env.str("MINIO_URL")
-
-CACHES = {
+STORAGES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env.str("REDIS_HOST"),
+        "BACKEND": "storages.backends.s3.S3Storage",
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "access_key": env.str("MINIO_ACCESS_KEY"),
+            "secret_key": env.str("MINIO_SECRET_KEY"),
+            "bucket_name": env.str("MINIO_BUCKET_NAME"),
+            "endpoint_url": env.str("MINIO_URL"),
+            "custom_domain": env.str("MINIO_CUSTOM_URL"),
         },
     },
 }

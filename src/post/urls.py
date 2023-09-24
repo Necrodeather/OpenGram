@@ -22,7 +22,7 @@ router.register(
 
 
 urlpatterns = [
-    path("", cache_page(CACHE_TTL)(include(router.urls)), name="self-posts"),
+    path("", include(router.urls), name="self-posts"),
     path(
         "user-posts/<str:username>",
         cache_page(CACHE_TTL)(UserPostsView.as_view()),
