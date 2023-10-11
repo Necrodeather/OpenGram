@@ -4,6 +4,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from common.permission import UserPermission
+from common.views import ListCreateDestroyView
 from post.models import Comment, Like, Post
 from post.serializers import (
     CommentSerializer,
@@ -27,16 +28,13 @@ class SelfPostView(
     def get_serializer_class(self):
         if self.action == "create":
             return CreateSelfPostSerializer
-        else:
-            return UpdateSelfPostSerializer
+        return UpdateSelfPostSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user).order_by(
-            "-created_at",
-        )
+        return Post.objects.filter(user=self.request.user)
 
 
 @extend_schema(tags=["post"])
@@ -54,9 +52,7 @@ class CommentPostView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        return Comment.objects.filter(
-            post_id=self.kwargs.get("post_id"),
-        ).order_by("-created_at")
+        return Comment.objects.filter(post_id=self.kwargs.get("post_id"))
 
     def perform_create(self, serializer):
         serializer.save(
@@ -66,16 +62,13 @@ class CommentPostView(viewsets.ModelViewSet):
 
 
 @extend_schema(tags=["comment"])
-class CommentLikesView(generics.ListCreateAPIView, generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated, UserPermission]
+class CommentLikesView(ListCreateDestroyView):
     serializer_class = LikeSerializer
     lookup_field = "comment_id"
 
     def get_queryset(self):
-        return (
-            Like.objects.select_related("comment")
-            .filter(comment_id=self.kwargs.get(self.lookup_field))
-            .order_by("-created_at")
+        return Like.objects.select_related("comment").filter(
+            comment_id=self.kwargs.get(self.lookup_field),
         )
 
     def create(self, request, *args, **kwargs):
@@ -89,16 +82,13 @@ class CommentLikesView(generics.ListCreateAPIView, generics.DestroyAPIView):
 
 
 @extend_schema(tags=["post"])
-class PostLikesView(generics.ListCreateAPIView, generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated, UserPermission]
+class PostLikesView(ListCreateDestroyView):
     serializer_class = LikeSerializer
     lookup_field = "post_id"
 
     def get_queryset(self):
-        return (
-            Like.objects.select_related("post")
-            .filter(post_id=self.kwargs.get(self.lookup_field))
-            .order_by("-created_at")
+        return Like.objects.select_related("post").filter(
+            post_id=self.kwargs.get(self.lookup_field),
         )
 
     def create(self, request, *args, **kwargs):

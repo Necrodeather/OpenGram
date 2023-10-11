@@ -15,5 +15,4 @@ class CustomUserManager(UserManager):
                 followers=Count("subscribers__followers__user__id"),
                 following=Count("subscribers__following__user__id"),
             )
-            .filter(is_active=True)
         )

@@ -17,8 +17,8 @@ DEBUG = env.bool("DEBUG")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 CUSTOM_APPS = [
-    "user",
-    "post",
+    "user.apps.UserConfig",
+    "post.apps.PostConfig",
 ]
 
 THIRD_PARTY_DJANGO_APPS = [
@@ -95,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = "ru"
+LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Europe/Moscow"
 
@@ -113,6 +113,14 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/minute",
+        "user": "500/minute",
+    },
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
@@ -121,7 +129,7 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "OpenGram API",
     "DESCRIPTION": "Web-based Social network for communicating photos with open source",
-    "VERSION": "0.1.0",
+    "VERSION": "0.1.2",
     "CONTACT": {"email": "Morbid6dead@gmail.com"},
     "LICENSE": {"name": "MIT"},
     "SERVE_INCLUDE_SCHEMA": True,
@@ -145,9 +153,35 @@ SIMPLE_JWT = {
     "UPDATE_LAST_LOGIN": True,
 }
 
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-AWS_STORAGE_BUCKET_NAME = env.str("MINIO_BUCKET_NAME")
-AWS_ACCESS_KEY_ID = env.str("MINIO_ACCESS_KEY")
-AWS_SECRET_ACCESS_KEY = env.str("MINIO_SECRET_KEY")
-AWS_S3_ENDPOINT_URL = env.str("MINIO_URL")
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "access_key": env.str("MINIO_ACCESS_KEY"),
+            "secret_key": env.str("MINIO_SECRET_KEY"),
+            "bucket_name": env.str("MINIO_BUCKET_NAME"),
+            "endpoint_url": env.str("MINIO_URL"),
+            "custom_domain": env.str("MINIO_CUSTOM_URL"),
+        },
+    },
+}
+
+CACHE_TTL = 60 * 30
+CACHE_ONE_DAY = 60 * 60 * 24
+
+
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BROKER_URL = env.str("REDIS_HOST")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+
+
+EMAIL_HOST = env.str("EMAIL_HOST")
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+EMAIL_PORT = env.str("EMAIL_PORT")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL")
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
+
+PROJECT_HTTP_ADDRESS = env.str("PROJECT_HTTP_ADDRESS")

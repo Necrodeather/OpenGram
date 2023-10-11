@@ -18,10 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "last_login",
         )
-        extra_kwargs = {
-            "id": {"read_only": True},
-            "date_joined": {"read_only": True},
-        }
+        read_only_fields = ["id", "date_joined"]
 
 
 class UserAvatarSerializer(serializers.ModelSerializer):

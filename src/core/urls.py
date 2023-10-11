@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.contrib.staticfiles import views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.urls import include, path, re_path
+from django.urls import include, path
 
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -24,6 +23,5 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
-    re_path(r"^static/(?P<path>.*)$", views.serve),
 ]
 urlpatterns += staticfiles_urlpatterns()

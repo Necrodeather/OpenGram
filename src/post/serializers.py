@@ -21,7 +21,7 @@ class UpdateSelfPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ["id", "description", "images"]
-        extra_kwargs = {"id": {"read_only": True}}
+        read_only_fields = ["id"]
 
 
 class CreateSelfPostSerializer(serializers.ModelSerializer):
@@ -49,7 +49,7 @@ class CreateSelfPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ["id", "upload_images", "description", "images"]
-        extra_kwargs = {"id": {"read_only": True}}
+        read_only_fields = ["id"]
 
 
 class UserPostSerializer(serializers.ModelSerializer):
@@ -86,11 +86,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ["id", "user", "parent_id", "text", "like"]
-        extra_kwargs = {
-            "id": {"read_only": True},
-            "user": {"read_only": True},
-            "parent_id": {"allow_null": True},
-        }
+        read_only_fields = ["id", "user", "parent_id"]
 
 
 class LikeSerializer(serializers.Serializer):
