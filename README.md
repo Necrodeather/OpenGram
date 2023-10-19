@@ -1,6 +1,6 @@
-# OpenGram
+# Pixiegram
 
-**OpenGram** _is an open source web-based photo sharing platform that allows users to share them with friends._
+**Pixiegram** _is an open source web-based photo sharing platform that allows users to share them with friends._
 
 ## Technologies
 - Python3.11
