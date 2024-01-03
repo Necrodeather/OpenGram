@@ -10,7 +10,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 
-class ForgotPasswordSerializer(serializers.Serializer):
+class ForgotPasswordOrRetryConfrimSerializer(serializers.Serializer):
     login = serializers.CharField(write_only=True)
 
 
