@@ -127,7 +127,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "OpenGram API",
+    "TITLE": "PixleGram API",
     "DESCRIPTION": "Web-based Social network for communicating photos with open source",
     "VERSION": "0.1.2",
     "CONTACT": {"email": "Morbid6dead@gmail.com"},
