@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 from user.auth.serializers import (
     AuthUserSerializer,
-    ForgotPasswordSerializer,
+    ForgotPasswordOrRetryConfrimSerializer,
     SetPasswordSerializer,
 )
 from user.auth.task import send_confirmation_email, send_reset_password_email
@@ -25,6 +25,22 @@ class CreateUserView(generics.CreateAPIView):
         )
 
         send_confirmation_email.delay(serializer.data)
+
+
+class RetryConfirmUser(APIView):
+    serializer_class = ForgotPasswordOrRetryConfrimSerializer
+
+    def post(self, request):
+        user = get_object_or_404(
+            CustomUser,
+            Q(email=request.data["login"]) | Q(username=request.data["login"]),
+            is_active=False,
+        )
+
+        serializer = self.serializer_class(user)
+        send_confirmation_email.delay(serializer.data)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 class ConfirmRegistrationView(APIView):
@@ -46,7 +62,7 @@ class ConfirmRegistrationView(APIView):
 
 
 class ForgotPasswordView(APIView):
-    serializer_class = ForgotPasswordSerializer
+    serializer_class = ForgotPasswordOrRetryConfrimSerializer
 
     def post(self, request):
         user = get_object_or_404(

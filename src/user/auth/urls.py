@@ -11,6 +11,7 @@ from user.auth.views import (
     CreateUserView,
     ForgotPasswordView,
     SetPasswordView,
+    RetryConfirmUser,
 )
 
 urlpatterns = [
@@ -32,5 +33,10 @@ urlpatterns = [
         "reset-password/<uuid:token>",
         SetPasswordView.as_view(),
         name="forgot_password",
+    ),
+    path(
+        "retry-confirm-user",
+        RetryConfirmUser.as_view(),
+        name="retry_confirm_user",
     ),
 ]
